@@ -1,13 +1,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Welcome to My Website</title>
+    <title>Simple Tweet App</title>
 </head>
 <body>
 
-<h1>My First Heading</h1>
-<p>My first paragraph.</p>
-<p>Welcome to my website! This is a simple Django application.</p>
+<h1>Welcome to the Simple Tweet App</h1>
+
+<h2>Signup</h2>
+<form method="POST" action="{% url 'signup' %}">
+    {% csrf_token %}
+    <input type="text" name="username" placeholder="Username" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <button type="submit">Sign Up</button>
+</form>
+
+<h2>Create a Tweet</h2>
+<form method="POST" action="{% url 'create_tweet' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <textarea name="text" placeholder="What's happening?" required></textarea>
+    <input type="file" name="image">
+    <button type="submit">Tweet</button>
+</form>
+
+<h2>Tweets</h2>
+<ul>
+    {% for tweet in tweets %}
+        <li>
+            <p>{{ tweet.text }}</p>
+            {% if tweet.image %}
+                <img src="{{ tweet.image.url }}" alt="Tweet Image" style="max-width: 200px;">
+            {% endif %}
+            <form method="POST" action="{% url 'delete_tweet' tweet.id %}">
+                {% csrf_token %}
+                <button type="submit">Delete</button>
+            </form>
+        </li>
+    {% endfor %}
+</ul>
 
 </body>
 </html>
